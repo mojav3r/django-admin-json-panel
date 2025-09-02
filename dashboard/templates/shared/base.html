@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+    {% include 'shared/head_refrances.html' %}
+    {% block extra_head_ref %}{% endblock %}
+
+    <title>{% block title %}{% endblock %}</title>
+</head>
+<body class=" color-light ">
+<!-- loader Start -->
+<div id="loading">
+    <div id="loading-center">
+    </div>
+</div>
+
+<div class="wrapper">
+    {% if request.resolver_match.url_name != 'user_login' %}
+        {% include 'shared/sidebar.html' %}
+        {% include 'shared/header.html' %}
+
+
+        <div class="content-page">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-12">
+                        {% block content %}{% endblock %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% include 'shared/footer.html' %}
+        {% else %}
+        {% block login_content %}{% endblock %}
+    {% endif %}
+    {% include 'shared/footer_refrances.html' %}
+    {% block extra_footer_ref %}{% endblock %}
+
+</div>

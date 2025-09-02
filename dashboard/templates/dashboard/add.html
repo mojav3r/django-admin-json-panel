@@ -1,0 +1,59 @@
+{% extends 'shared/base.html' %}
+
+{% block title %}
+    Add New Data
+{% endblock %}
+
+{% block content %}
+    <div class="card">
+        <div class="card-header d-flex justify-content-between">
+            <div class="header-title">
+                <h4 class="card-title">Add New Data</h4>
+            </div>
+        </div>
+        <div class="card-body">
+            {% if messages %}
+                {% for message in messages %}
+                    {% if message.tags == 'error' %}
+                        <div class="alert alert-danger" role="alert">
+                            <div class="iq-alert-icon">
+                                <i class="ri-close-fill"></i>
+                            </div>
+                            <div class="iq-alert-text">{{ message }}</div>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-success" role="alert">
+                            <div class="iq-alert-icon">
+                                <i class="ri-check-line"></i>
+                            </div>
+                            <div class="iq-alert-text">{{ message }}</div>
+                        </div>
+                    {% endif %}
+
+                {% endfor %}
+            {% endif %}
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="input-group">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="first">Author</span>
+                        </div>
+                        {{ form.author }}
+                    </div>
+                </div>
+                <br>
+                <div class="input-group mb-4">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Upload Json</span>
+                    </div>
+                    <div class="custom-file">
+                        {{ form.upload }}
+                        <label class="custom-file-label" for="inputGroupFile01">Choose file</label>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary btn-new"><i class="ri-add-line"></i>Add and save</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}

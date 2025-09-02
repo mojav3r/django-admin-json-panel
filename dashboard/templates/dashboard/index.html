@@ -1,0 +1,198 @@
+{% extends 'shared/base.html' %}
+{% load static %}
+{% load custom_filters %}
+
+{% block title %}
+    Data Entries
+{% endblock %}
+
+{% block content %}
+    <div class="card">
+        <div class="card-header d-flex justify-content-between">
+            <div class="header-title">
+                <h4 class="card-title">See All Datas</h4>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="input-group">
+                <input type="text" placeholder="Type your query or select here" class="form-control"
+                       aria-label="Text input with segmented dropdown button" id="input-tag">
+                <form class="input-group-append" method="get">
+                    <input type="hidden" size="40" name="q" value="{% if q %}{{ q }}{% endif %}" id="searchbar">
+                    <button type="submit" class="btn btn-outline-primary">Search</button>
+                    <button type="button" class="btn btn-primary dropone dropdown-toggle  dropdown-toggle-split"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="las la-angle-down"></i>
+                    </button>
+                    <div class="dropdown-menu" style="">
+                        <a class="dropdown-item" onclick="indexUpdateInput('owner:')">Owner</a>
+                        <a class="dropdown-item" onclick="indexUpdateInput('Abaqus-Version:')">Abaqus-Version</a>
+                        <a class="dropdown-item" onclick="indexUpdateInput('Hash_Orientation:')">Hash_Orientation</a>
+                        <a class="dropdown-item" onclick="indexUpdateInput('Texture_Type:')">Texture_Type</a>
+                        <a class="dropdown-item" onclick="indexUpdateInput('Element_Number:')">Element_Number</a>
+                        <a class="dropdown-item" onclick="indexUpdateInput('Grain_Number:')">Grain_Number</a>
+                        <a class="dropdown-item" onclick="indexUpdateInput('Material_parameters:')">Material_parameters(Whole
+                            array)</a>
+                        <a class="dropdown-item" onclick="indexUpdateInput('Load_Type:')">Load_Type</a>
+                        <a class="dropdown-item" onclick="indexUpdateInput('Stress_Type:')">Stress_Type</a>
+                        <a class="dropdown-item" onclick="indexUpdateInput('Load_Descriptor:')">Load_Descriptor</a>
+                        <a class="dropdown-item" onclick="indexUpdateInput('Hash_load:')">Hash_load</a>
+                        <a class="dropdown-item" onclick="indexUpdateInput('Scaling_Factor:')">Scaling_Factor</a>
+                        <a class="dropdown-item" onclick="indexUpdateInput('Max_Total_Strain:')">Max_Total_Strain</a>
+                    </div>
+                </form>
+            </div>
+            <div style="display: flex; gap: 5px;" id="tags">
+            </div>
+            <br>
+            {% if q %}
+                <span class="mt-2 badge border border-dark">{{ search_count }} results (<a href="{% url 'dashboard:dashboard' %}"
+                                                                                           class="text-secondary">{{ total_count }} total</a>)</span>
+            {% else %}
+                <span class="mt-2 badge border border-dark">{{ total_count }} json datas</span>
+
+            {% endif %}
+            <br>
+            <br>
+            <div class="table-responsive">
+                <table id="datatable" class="table data-table table-striped">
+                    <thead>
+                    <div style="width: 30%" class="input-group  mb-4">
+                        <form method="post" action="">
+                            {% csrf_token %}
+                            <select class="custom-select" name="action_selector" id="actionSelector">
+                                <option selected="" value="">Choose a action ...</option>
+                                <option value="delete_selected">Delete selected json datas</option>
+                                <option value="merge_selected">Merge selected json datas</option>
+                            </select>
+                            <input type="hidden" name="ids" id="ids" value="">
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary" id="go-button" type="submit" name="action">
+                                    GO
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    {% if messages %}
+                        {% for message in messages %}
+                            {% if message.tags == 'error' %}
+                                <div class="alert alert-danger" role="alert">
+                                    <div class="iq-alert-icon">
+                                        <i class="ri-close-fill"></i>
+                                    </div>
+                                    <div class="iq-alert-text">{{ message }}</div>
+                                </div>
+                            {% else %}
+                                <div class="alert alert-success" role="alert">
+                                    <div class="iq-alert-icon">
+                                        <i class="ri-check-line"></i>
+                                    </div>
+                                    <div class="iq-alert-text">{{ message }}</div>
+                                </div>
+                            {% endif %}
+
+                        {% endfor %}
+                    {% endif %}
+
+                    <tr class="ligth">
+                        <th style="width: 1%;padding: 10px;text-align: center"><input type="checkbox" id="select-all">
+                        </th>
+                        <th>JSON FILE</th>
+                        <th>AUTHOR</th>
+                        <th>UPLOAD TIME</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% if datas %}
+                        {% for data in datas %}
+                            <tr data-id="{{ data.id }}" class="main-row">
+                                <td style="width: 1%;padding: 10px;text-align: center" class="checkbox-cell"><input
+                                        type="checkbox" class="row-checkbox" value="{{ data.id }}"></td>
+                                <td>{{ data.json_file }}</td>
+                                <td>{{ data.author }}</td>
+                                <td>{{ data.upload_time }}</td>
+                                <td>
+                                    <a href="{% url 'dashboard:detail' pk=data.pk %}">
+                                        <button style="display: flex; gap: 4px" type="button"
+                                                class="btn btn-outline-primary btn-sm mr-2">Detail<i
+                                                class="ri-arrow-right-line"></i>
+                                        </button>
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr class="details-row" data-parent-id="{{ data.id }}">
+                                <td></td>
+                                <td colspan="1">
+                                    <div class="p-1">
+                                        <p><strong>Owner:</strong> {{ data.data|get_meta_data:"Owner" }}</p>
+                                        <p><strong>Date:</strong> {{ data.data|get_meta_data:"Date" }}</p>
+                                        <p><strong>Abaqus
+                                            Version:</strong> {{ data.data|get_meta_data:"Abaqus-Version" }}
+                                        </p>
+                                        <p><strong>Hash
+                                            Orientation:</strong> {{ data.data|get_meta_data:"Orientation.Hash_Orientation" }}
+                                        </p>
+                                        <p><strong>Texture
+                                            Type:</strong> {{ data.data|get_meta_data:"Orientation.Texture_Type" }}</p>
+                                        <p><strong>Material
+                                            Identifier:</strong> {{ data.data|get_meta_data:"Material.Material_Identifier" }}
+                                        </p>
+                                        <p><strong>Element
+                                            Number:</strong> {{ data.data|get_meta_data:"Element_Number" }}
+                                        </p>
+                                    </div>
+                                </td>
+                                <td colspan="1">
+                                    <div class="p-1">
+
+                                        <p><strong>Grain Number:</strong> {{ data.data|get_meta_data:"Grain_Number" }}
+                                        </p>
+                                        <p><strong>Load Type:</strong> {{ data.data|get_meta_data:"Load_Type" }}</p>
+                                        <p><strong>Hash Load:</strong> {{ data.data|get_meta_data:"Hash_Load" }}</p>
+                                        <p><strong>Load
+                                            Descriptor:</strong> {{ data.data|get_meta_data:"Load_Descriptor" }}
+                                        </p>
+                                        <p><strong>Scaling
+                                            Factor:</strong> {{ data.data|get_meta_data:"Scaling_Factor" }}
+                                        </p>
+                                        <p><strong>Max Total
+                                            Strain:</strong> {{ data.data|get_meta_data:"Max_Total_Strain" }}</p>
+                                    </div>
+                                </td>
+                                <td>
+                                    <a href="{% url 'dashboard:detail' pk=data.pk %}">
+                                        <button style="display: flex; gap: 4px" type="button"
+                                                class="btn btn-outline-secondary btn-sm mr-2">
+                                            Go to the entry page <i class="ri-arrow-right-line"></i>
+                                        </button>
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr class="odd">
+                            <td valign="top" colspan="5" class="dataTables_empty">No data available in table</td>
+                        </tr>
+                    {% endif %}
+
+                    </tbody>
+                    <tfoot>
+                    <tr>
+                        <th></th>
+                        <th>JSON FILE</th>
+                        <th>AUTHOR</th>
+                        <th>UPLOAD TIME</th>
+                        <th></th>
+                    </tr>
+                    </tfoot>
+                </table>
+                <br>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block extra_footer_ref %}
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="{% static 'js/custom.js' %}"></script>
+{% endblock %}

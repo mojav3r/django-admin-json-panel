@@ -1,0 +1,43 @@
+{% load static %}
+<div class="iq-sidebar  sidebar-default ">
+    <div class="iq-sidebar-logo d-flex align-items-center">
+        <a href="{% url 'dashboard:dashboard' %}" class="header-logo">
+            <img src="{% static 'images/logo.svg' %}" alt="logo">
+            <h3 class="logo-title light-logo">Lab</h3>
+        </a>
+        <div class="iq-menu-bt-sidebar ml-0">
+            <i class="las la-bars wrapper-menu"></i>
+        </div>
+    </div>
+    <div class="data-scrollbar" data-scroll="1">
+        <nav class="iq-sidebar-menu">
+            <ul id="iq-sidebar-toggle" class="iq-menu">
+                <li {% if request.resolver_match.url_name == 'dashboard' %}class="active"{% endif %}>
+                    <a href="{% url 'dashboard:dashboard' %}" class="svg-icon">
+                        <svg class="svg-icon" width="25" height="25" xmlns="http://www.w3.org/2000/svg"
+                             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                             stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="16" y1="13" x2="8" y2="13"></line>
+                            <line x1="16" y1="17" x2="8" y2="17"></line>
+                            <polyline points="10 9 9 9 8 9"></polyline>
+                        </svg>
+                        <span class="ml-4">Data Entries</span>
+                    </a>
+                </li>
+                <li {% if request.resolver_match.url_name == 'add_data' %}class="active"{% endif %}>
+                    <a href="{% url 'dashboard:add_data' %}" class="svg-icon">
+                        <svg class="svg-icon" width="25" height="25" xmlns="http://www.w3.org/2000/svg"
+                             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                             stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M24 10h-10v-10h-4v10h-10v4h10v10h4v-10h10z"/>
+                        </svg>
+                        <span class="ml-4">Add New Data</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        <div class="pt-5 pb-2"></div>
+    </div>
+</div>

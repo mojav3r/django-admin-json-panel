@@ -1,0 +1,67 @@
+{% extends 'shared/base.html' %}
+{% load static %}
+
+{% block title %}Login{% endblock %}
+
+{% block login_content %}
+    <section class="login-content">
+        <div class="container">
+            <div class="row align-items-center justify-content-center height-self-center">
+                <div class="col-lg-8">
+                    <div class="card auth-card">
+                        <div class="card-body p-0">
+                            <div class="d-flex align-items-center auth-content">
+                                <div class="col-lg-6 bg-primary content-left">
+                                    <div class="p-3">
+                                        <h2 class="mb-2 text-white">Sign In</h2>
+                                        <p>Login to stay connected.</p>
+                                        <form method="post">
+                                            {% csrf_token %}
+                                            <div class="row">
+                                                <div class="col-lg-12">
+                                                    <div class="floating-label form-group">
+                                                        {{ form.username }}
+                                                        <label>username</label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-12">
+                                                    <div class="floating-label form-group">
+                                                        {{ form.password }}
+                                                        <label>password</label>
+                                                    </div>
+                                                    {% if form.username.errors %}
+                                                        <div style="display: flex; gap: 3px" class="text-danger"><i
+                                                                class="ri-error-warning-line"></i>
+                                                            {% for error in form.username.errors %}
+                                                                {{ error }}
+                                                            {% endfor %}
+                                                        </div>
+                                                    {% endif %}
+                                                    {% if form.password.errors %}
+                                                        <div style="display: flex; gap: 3px" class="text-danger"><i
+                                                                class="ri-error-warning-line"></i>
+                                                            {% for error in form.password.errors %}
+                                                                {{ error }}
+                                                            {% endfor %}
+                                                        </div>
+                                                    {% endif %}
+                                                </div>
+
+                                            </div>
+
+                                            <button type="submit" class="btn btn-white">Sign In</button>
+
+                                        </form>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 content-right">
+                                    <img src="{% static 'images/login/login2.png' %}" style="height: 400px;" class="img-fluid image-right" alt="">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
