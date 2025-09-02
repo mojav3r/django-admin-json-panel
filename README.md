@@ -1,10 +1,5 @@
-# LABORATORY
-
-<hr>
-
 ## Description
--
-<hr>
+Custom Django Admin Panel for Research Institute
 
 ## Installation
 
